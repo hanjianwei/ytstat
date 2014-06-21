@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'ytstat'
+require 'tabularize'
+require 'optparse'
+
+begin
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "Usage: ytstat [options]]"
+    opts.separator ""
+    opts.separator "Specific options:"
+  end
+
+  opts.on('-h', '--help', 'Display help message') do
+    puts opts
+    exit
+  end
+
+  opts.on('-v', '--version', 'Version information') do
+    puts Ytstat::VERSION
+    exit
+  end
+
+  options[:domain] = 'vpndidu.com'
+  opts.on('-d', '--domain DOMAIN', 'Specify domain name.') do |d|
+    options[:domain] = d
+  end
+
+  # Parse options
+  opts.parse!
+
+  # Ping servers
+  hosts = Array.new
+
+  servers = {jp: 3, us: 5, sg: 2, tw: 1, hk: 2, uk: 1}
+  servers.each do |country, n|
+    1.upto(n) do |i|
+      hosts << Ytstat::Host.new("#{country}#{i}", options[:domain])
+    end
+  end
+
+  hosts.each {|host| host.ping }.sort! {|a, b| a.avg <=> b.avg }
+
+  # Display stats
+  table = Tabularize.new
+
+  table << %w[host avg stddev min max]
+  table.separator!
+
+  hosts.each do |host|
+    table << [host.url, host.avg, host.stddev, host.min, host.max]
+  end
+
+  puts table
+end
