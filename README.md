@@ -1,5 +1,7 @@
 # Ytstat
 
+[![Gem Version](https://img.shields.io/gem/v/ytstat.svg)](https://rubygems.org/gems/ytstat)
+
 Summary of [Yunti](http://ytvpn.com) servers.
 
 ## Installation
