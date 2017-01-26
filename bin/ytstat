@@ -36,11 +36,12 @@ begin
   # Ping servers
   hosts = Array.new
 
-  servers = {jp: 3, us: 5, sg: 2, tw: 1, hk: 2, uk: 1}
+  servers = {jp: 4, us: 6, sg: 2, tw: 1, hk: 3, uk: 1}
   servers.each do |country, n|
     1.upto(n) do |i|
       hosts << Ytstat::Host.new("p1.#{country}#{i}", options[:domain])
       hosts << Ytstat::Host.new("p2.#{country}#{i}", options[:domain])
+      hosts << Ytstat::Host.new("p4.#{country}#{i}", options[:domain])
     end
   end
 
